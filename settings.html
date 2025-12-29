@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <title>Impostazioni JDM</title>
+  <style>
+    body{font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;margin:20px;background:#0b0b10;color:#f5f5f5}
+    h1,h2{margin-bottom:10px}
+    input{padding:6px;border-radius:6px;border:1px solid #444;background:#15151c;color:#fff}
+    button{margin-top:10px;padding:8px 16px;border-radius:6px;border:none;cursor:pointer;font-weight:600;background:#7f5bff;color:#fff}
+    button:hover{filter:brightness(1.1)}
+    table{width:100%;border-collapse:collapse;margin-top:15px;font-size:14px}
+    th,td{border:1px solid #333;padding:6px 8px;text-align:left}
+    th{background:#1f1f2b}
+    tr:nth-child(even) td{background:#14141d}
+    .info{margin-top:8px;font-size:13px;opacity:.85}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    hr{margin:28px 0;border-color:#222}
+    a{color:#b88bff;text-decoration:none}
+    a:hover{text-decoration:underline}
+  </style>
+</head>
+
+<body>
+  <h1>Impostazioni JDM</h1>
+  <div class="info">
+    Qui gestisci Dipendenti e Macchine. Tutto viene salvato in localStorage.
+    <br>
+    <a href="index.html">← Torna al fatturato</a>
+  </div>
+
+  <hr>
+
+  <h2>Gestione dipendenti</h2>
+  <div class="row">
+    <input id="newDipendente" type="text" placeholder="Nome Cognome (es. Mario Rossi)" style="width:280px">
+    <button onclick="addDipendente()">Aggiungi</button>
+    <button onclick="resetDipendenti()" style="background:#ff4444;">Reset</button>
+    <button onclick="exportDipendentiJson()">Export JSON</button>
+    <button onclick="triggerImportDipendenti()">Import JSON</button>
+    <input id="importDipFile" type="file" accept="application/json" style="display:none" />
+  </div>
+
+  <div class="info">Dipendenti salvati:</div>
+  <div id="dipendentiList"></div>
+
+  <hr>
+
+  <h2>Gestione macchine</h2>
+  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:10px; margin-top:10px;">
+    <input id="carModello" type="text" placeholder="Modello (es. ANNIS EUROS)">
+    <input id="carCodice" type="text" placeholder="Codice (es. Euros)">
+    <input id="carPrezzoVendita" type="text" placeholder="Prezzo vendita (es. 70000)">
+    <input id="carPrezzoAcquisto" type="text" placeholder="Prezzo acquisto (es. 56000)">
+    <input id="carProfitto" type="text" placeholder="Profitto (es. 13580)">
+    <input id="carKeys" type="text" placeholder="Keys (virgola) es. euros, eu">
+  </div>
+
+  <div class="row">
+    <button onclick="addCar()">Aggiungi macchina</button>
+    <button onclick="resetCars()" style="background:#ff4444;">Reset</button>
+    <button onclick="exportCarsJson()">Export JSON</button>
+    <button onclick="triggerImportCars()">Import JSON</button>
+    <input id="importCarsFile" type="file" accept="application/json" style="display:none" />
+  </div>
+
+  <div class="info">Macchine salvate:</div>
+  <div id="carsList"></div>
+
+<script>
+  // ====== CHIAVI STORAGE (DEVONO MATCHARE index.html) ======
+  const LS_DIP = "jdm_dipendenti";
+  const LS_CARS = "jdm_autoList";
+
+  // ====== DEFAULT (metti qui i tuoi default se vuoi) ======
+  // Se vuoi i default originali: incolla gli array iniziali qui.
+  const defaultDipendenti = [];
+  const defaultAutoList = [];
+
+  // ====== UTILS ======
+  function cleanString(t){
+    return String(t||"").toLowerCase()
+      .replace(/[^\w\sÀ-ÖØ-öø-ÿ]/g," ")
+      .replace(/\s+/g," ")
+      .trim();
+  }
+  function parseImporto(raw){
+    if(!raw) return 0;
+    let cleaned = String(raw).replace(/[^\d.,]/g,"").replace(/\./g,"").replace(",",".");
+    return parseFloat(cleaned) || 0;
+  }
+  function downloadJson(filename, dataObj){
+    const json = JSON.stringify(dataObj, null, 2);
+    const blob = new Blob([json], { type:"application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = filename;
+    document.body.appendChild(a);
+    a.click(); a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  // ====== DIPENDENTI ======
+  let dipendenti = loadDipendenti();
+
+  function loadDipendenti(){
+    try{
+      const v = JSON.parse(localStorage.getItem(LS_DIP));
+      return Array.isArray(v) ? v : [...defaultDipendenti];
+    } catch { return [...defaultDipendenti]; }
+  }
+  function saveDipendenti(arr){ localStorage.setItem(LS_DIP, JSON.stringify(arr)); }
+
+  function renderDipendenti(){
+    const wrap = document.getElementById("dipendentiList");
+    if(dipendenti.length === 0){
+      wrap.innerHTML = `<div class="info">Nessun dipendente.</div>`;
+      return;
+    }
+    wrap.innerHTML = `
+      <table><thead><tr><th>#</th><th>Nome</th><th>Azioni</th></tr></thead><tbody>
+      ${dipendenti.map((d,i)=>`
+        <tr>
+          <td>${i+1}</td>
+          <td>${d}</td>
+          <td><button onclick="removeDipendente(${i})" style="background:#ff4444;padding:6px 10px;">Rimuovi</button></td>
+        </tr>`).join("")}
+      </tbody></table>`;
+  }
+
+  function addDipendente(){
+    const input = document.getElementById("newDipendente");
+    const raw = (input.value||"").trim();
+    if(!raw) return;
+    if(dipendenti.some(d => cleanString(d) === cleanString(raw))) { input.value=""; return; }
+    dipendenti.push(raw);
+    saveDipendenti(dipendenti);
+    input.value = "";
+    renderDipendenti();
+  }
+  function removeDipendente(idx){
+    dipendenti.splice(idx,1);
+    saveDipendenti(dipendenti);
+    renderDipendenti();
+  }
+  function resetDipendenti(){
+    if(!confirm("Reset dipendenti?")) return;
+    dipendenti = [...defaultDipendenti];
+    localStorage.removeItem(LS_DIP);
+    saveDipendenti(dipendenti);
+    renderDipendenti();
+  }
+
+  function exportDipendentiJson(){
+    downloadJson("dipendenti_jdm.json", { version:1, exportedAt:new Date().toISOString(), dipendenti });
+  }
+  function triggerImportDipendenti(){
+    const inp = document.getElementById("importDipFile");
+    inp.value = "";
+    inp.onchange = importDipendentiFromFile;
+    inp.click();
+  }
+  function importDipendentiFromFile(e){
+    const file = e.target.files?.[0]; if(!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try{
+        const obj = JSON.parse(reader.result);
+        let arr = Array.isArray(obj) ? obj : obj?.dipendenti;
+        if(!Array.isArray(arr)) throw new Error("Formato non valido.");
+        arr = arr.map(s=>String(s||"").trim()).filter(Boolean);
+
+        const out=[]; const seen=new Set();
+        arr.forEach(d=>{
+          const k = cleanString(d);
+          if(!seen.has(k)){ seen.add(k); out.push(d); }
+        });
+
+        dipendenti = out;
+        saveDipendenti(dipendenti);
+        renderDipendenti();
+      } catch(err){
+        alert("Import dipendenti fallito: " + err.message);
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  // ====== MACCHINE ======
+  let autoList = loadCars();
+
+  function loadCars(){
+    try{
+      const v = JSON.parse(localStorage.getItem(LS_CARS));
+      return Array.isArray(v) ? v : [...defaultAutoList];
+    } catch { return [...defaultAutoList]; }
+  }
+  function saveCars(arr){ localStorage.setItem(LS_CARS, JSON.stringify(arr)); }
+
+  function renderCars(){
+    const wrap = document.getElementById("carsList");
+    if(autoList.length === 0){
+      wrap.innerHTML = `<div class="info">Nessuna macchina.</div>`;
+      return;
+    }
+    wrap.innerHTML = `
+      <table>
+        <thead><tr>
+          <th>#</th><th>Modello</th><th>Codice</th><th>Vendita</th><th>Acquisto</th><th>Profitto</th><th>Keys</th><th>Azioni</th>
+        </tr></thead>
+        <tbody>
+          ${autoList.map((a,i)=>`
+            <tr>
+              <td>${i+1}</td>
+              <td>${a.modello||"-"}</td>
+              <td>${a.codice||"-"}</td>
+              <td>€ ${(a.prezzoVendita||0).toLocaleString("it-IT")}</td>
+              <td>€ ${(a.prezzoAcquisto||0).toLocaleString("it-IT")}</td>
+              <td>€ ${(a.profitto||0).toLocaleString("it-IT")}</td>
+              <td>${Array.isArray(a.keys) ? a.keys.join(", ") : "-"}</td>
+              <td><button onclick="removeCar(${i})" style="background:#ff4444;padding:6px 10px;">Rimuovi</button></td>
+            </tr>`).join("")}
+        </tbody>
+      </table>`;
+  }
+
+  function addCar(){
+    const modello = (document.getElementById("carModello").value||"").trim();
+    const codice  = (document.getElementById("carCodice").value||"").trim();
+    if(!modello || !codice) return;
+
+    if(autoList.some(a => (a.codice||"").toLowerCase() === codice.toLowerCase())) return;
+
+    const prezzoVendita = parseImporto(document.getElementById("carPrezzoVendita").value);
+    const prezzoAcquisto = parseImporto(document.getElementById("carPrezzoAcquisto").value);
+    const profitto = parseImporto(document.getElementById("carProfitto").value);
+
+    const keysRaw = (document.getElementById("carKeys").value||"").trim();
+    const keys = keysRaw ? keysRaw.split(",").map(s=>s.trim().toLowerCase()).filter(Boolean) : [];
+
+    autoList.push({ modello, codice, prezzoVendita, prezzoAcquisto, profitto, keys });
+    saveCars(autoList);
+
+    ["carModello","carCodice","carPrezzoVendita","carPrezzoAcquisto","carProfitto","carKeys"]
+      .forEach(id => document.getElementById(id).value = "");
+
+    renderCars();
+  }
+
+  function removeCar(idx){
+    autoList.splice(idx,1);
+    saveCars(autoList);
+    renderCars();
+  }
+
+  function resetCars(){
+    if(!confirm("Reset macchine?")) return;
+    autoList = [...defaultAutoList];
+    localStorage.removeItem(LS_CARS);
+    saveCars(autoList);
+    renderCars();
+  }
+
+  function exportCarsJson(){
+    downloadJson("macchine_jdm.json", { version:1, exportedAt:new Date().toISOString(), autoList });
+  }
+  function triggerImportCars(){
+    const inp = document.getElementById("importCarsFile");
+    inp.value = "";
+    inp.onchange = importCarsFromFile;
+    inp.click();
+  }
+  function importCarsFromFile(e){
+    const file = e.target.files?.[0]; if(!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try{
+        const obj = JSON.parse(reader.result);
+        let arr = Array.isArray(obj) ? obj : obj?.autoList;
+        if(!Array.isArray(arr)) throw new Error("Formato non valido.");
+
+        const norm = arr.map(x=>{
+          const modello = String(x?.modello||"").trim();
+          const codice = String(x?.codice||"").trim();
+          if(!modello || !codice) return null;
+
+          let keys = x?.keys;
+          if(typeof keys === "string") keys = keys.split(",").map(s=>s.trim().toLowerCase()).filter(Boolean);
+          else if(Array.isArray(keys)) keys = keys.map(s=>String(s).trim().toLowerCase()).filter(Boolean);
+          else keys = [];
+
+          return {
+            modello,
+            codice,
+            prezzoVendita: Number(x?.prezzoVendita)||0,
+            prezzoAcquisto: Number(x?.prezzoAcquisto)||0,
+            profitto: Number(x?.profitto)||0,
+            keys
+          };
+        }).filter(Boolean);
+
+        const out=[]; const seen=new Set();
+        norm.forEach(a=>{
+          const k = a.codice.toLowerCase();
+          if(!seen.has(k)){ seen.add(k); out.push(a); }
+        });
+
+        autoList = out;
+        saveCars(autoList);
+        renderCars();
+      } catch(err){
+        alert("Import macchine fallito: " + err.message);
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  // ====== START ======
+  window.addEventListener("load", () => {
+    renderDipendenti();
+    renderCars();
+  });
+</script>
+</body>
+</html>

@@ -1,202 +1,210 @@
 <!DOCTYPE html>
 <html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Fatturato JDM Garage</title>
+    <style>
+      body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        margin: 20px;
+        background: #0b0b10;
+        color: #f5f5f5;
+      }
 
-<head>
-  <meta charset="UTF-8" />
-  <title>Fatturato JDM Garage</title>
-  <style>
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      margin: 20px;
-      background: #0b0b10;
-      color: #f5f5f5;
-    }
+      h1,
+      h2 {
+        margin-bottom: 10px;
+      }
 
-    h1,
-    h2 {
-      margin-bottom: 10px;
-    }
+      textarea {
+        width: 100%;
+        height: 260px;
+        box-sizing: border-box;
+        padding: 10px;
+        border-radius: 6px;
+        border: 1px solid #444;
+        background: #15151c;
+        color: #f5f5f5;
+        resize: vertical;
+      }
 
-    textarea {
-      width: 100%;
-      height: 260px;
-      box-sizing: border-box;
-      padding: 10px;
-      border-radius: 6px;
-      border: 1px solid #444;
-      background: #15151c;
-      color: #f5f5f5;
-      resize: vertical;
-    }
+      button {
+        margin-top: 10px;
+        padding: 8px 16px;
+        border-radius: 6px;
+        border: none;
+        cursor: pointer;
+        font-weight: 600;
+        background: #7f5bff;
+        color: #fff;
+      }
 
-    button {
-      margin-top: 10px;
-      padding: 8px 16px;
-      border-radius: 6px;
-      border: none;
-      cursor: pointer;
-      font-weight: 600;
-      background: #7f5bff;
-      color: #fff;
-    }
+      button:hover {
+        filter: brightness(1.1);
+      }
 
-    button:hover {
-      filter: brightness(1.1);
-    }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+        font-size: 14px;
+      }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 15px;
-      font-size: 14px;
-    }
+      th,
+      td {
+        border: 1px solid #333;
+        padding: 6px 8px;
+        text-align: left;
+      }
 
-    th,
-    td {
-      border: 1px solid #333;
-      padding: 6px 8px;
-      text-align: left;
-    }
+      th {
+        background: #1f1f2b;
+      }
 
-    th {
-      background: #1f1f2b;
-    }
+      tr:nth-child(even) td {
+        background: #14141d;
+      }
 
-    tr:nth-child(even) td {
-      background: #14141d;
-    }
+      .totali {
+        margin-top: 25px;
+        display: flex;
+        gap: 30px;
+        flex-wrap: wrap;
+      }
 
-    .totali {
-      margin-top: 25px;
-      display: flex;
-      gap: 30px;
-      flex-wrap: wrap;
-    }
+      .totale-box {
+        padding: 10px 14px;
+        border-radius: 6px;
+        background: #15151f;
+        border: 1px solid #333;
+        min-width: 260px;
+      }
 
-    .totale-box {
-      padding: 10px 14px;
-      border-radius: 6px;
-      background: #15151f;
-      border: 1px solid #333;
-      min-width: 260px;
-    }
+      .error {
+        color: #ff7070;
+        margin-top: 8px;
+        white-space: pre-line;
+      }
 
-    .error {
-      color: #ff7070;
-      margin-top: 8px;
-      white-space: pre-line;
-    }
+      .info {
+        margin-top: 8px;
+        font-size: 13px;
+        opacity: 0.8;
+      }
 
-    .info {
-      margin-top: 8px;
-      font-size: 13px;
-      opacity: 0.8;
-    }
+      /* FRECCE ORDINAMENTO – NEON JDM */
+      th.sortable {
+        cursor: pointer;
+        position: relative;
+        padding-right: 22px;
+        user-select: none;
+        text-shadow: 0 0 4px #000;
+      }
 
-    /* FRECCE ORDINAMENTO – NEON JDM */
-    th.sortable {
-      cursor: pointer;
-      position: relative;
-      padding-right: 22px;
-      user-select: none;
-      text-shadow: 0 0 4px #000;
-    }
+      th.sortable::after {
+        content: "";
+        position: absolute;
+        right: 6px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 14px;
+        opacity: 0.25;
+        transition: 0.15s;
+        color: #b18cff;
+        text-shadow: 0 0 4px #7d4dff, 0 0 6px #b18cff, 0 0 10px #9b63ff;
+      }
 
-    th.sortable::after {
-      content: "";
-      position: absolute;
-      right: 6px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 14px;
-      opacity: 0.25;
-      transition: 0.15s;
-      color: #b18cff;
-      text-shadow:
-        0 0 4px #7d4dff,
-        0 0 6px #b18cff,
-        0 0 10px #9b63ff;
-    }
+      th.sortable.asc::after {
+        content: "▲";
+        opacity: 1;
+        color: #caa3ff;
+        text-shadow: 0 0 6px #bb7dff, 0 0 10px #caa3ff, 0 0 14px #e4c9ff;
+      }
 
-    th.sortable.asc::after {
-      content: "▲";
-      opacity: 1;
-      color: #caa3ff;
-      text-shadow:
-        0 0 6px #bb7dff,
-        0 0 10px #caa3ff,
-        0 0 14px #e4c9ff;
-    }
+      th.sortable.desc::after {
+        content: "▼";
+        opacity: 1;
+        color: #ff9aff;
+        text-shadow: 0 0 6px #ff59ff, 0 0 10px #ff9aff, 0 0 14px #ffb6ff;
+      }
 
-    th.sortable.desc::after {
-      content: "▼";
-      opacity: 1;
-      color: #ff9aff;
-      text-shadow:
-        0 0 6px #ff59ff,
-        0 0 10px #ff9aff,
-        0 0 14px #ffb6ff;
-    }
+      th.sortable:hover::after {
+        opacity: 0.9;
+      }
 
-    th.sortable:hover::after {
-      opacity: 0.9;
-    }
+      .copy-modelli {
+        cursor: pointer;
+        color: #b88bff;
+        text-shadow: 0 0 4px #b88bff, 0 0 8px #6c2aff;
+        transition: 0.15s;
+      }
 
-    .copy-modelli {
-      cursor: pointer;
-      color: #b88bff;
-      text-shadow:
-        0 0 4px #b88bff,
-        0 0 8px #6c2aff;
-      transition: 0.15s;
-    }
+      .copy-modelli:hover {
+        color: #ffb7ff;
+        text-shadow: 0 0 6px #ff4aff, 0 0 10px #ffb7ff;
+      }
 
-    .copy-modelli:hover {
-      color: #ffb7ff;
-      text-shadow:
-        0 0 6px #ff4aff,
-        0 0 10px #ffb7ff;
-    }
+      .copiato-tooltip {
+        position: absolute;
+        background: #8d3aff;
+        padding: 3px 6px;
+        border-radius: 4px;
+        font-size: 11px;
+        color: white;
+        border: 1px solid #b57dff;
+        box-shadow: 0 0 6px #b57dff, 0 0 12px #5f22a6;
+        opacity: 0;
+        transform: translate(-50%, -12px);
+        pointer-events: none;
+        transition: opacity 0.15s ease;
+      }
+    </style>
+  </head>
 
-    .copiato-tooltip {
-      position: absolute;
-      background: #8d3aff;
-      padding: 3px 6px;
-      border-radius: 4px;
-      font-size: 11px;
-      color: white;
-      border: 1px solid #b57dff;
-      box-shadow: 0 0 6px #b57dff, 0 0 12px #5f22a6;
-      opacity: 0;
-      transform: translate(-50%, -12px);
-      pointer-events: none;
-      transition: opacity 0.15s ease;
-    }
-  </style>
-</head>
+  <body>
+    <h1>Analisi fatturato JDM</h1>
+    <a
+      href="settings.html"
+      style="
+        display: inline-block;
+        margin: 10px 0 20px;
+        color: #b88bff;
+        font-weight: 600;
+        text-decoration: none;
+      "
+    >
+      ⚙️ Impostazioni (Dipendenti / Macchine)
+    </a>
+    <p>Incolla i messaggi (così come escono da Discord) e premi "Elabora".</p>
 
-<body>
-
-  <h1>Analisi fatturato JDM</h1>
-  <p>Incolla i messaggi (così come escono da Discord) e premi "Elabora".</p>
-
-  <textarea id="inputText" placeholder="Incolla qui i log con:
+    <textarea
+      id="inputText"
+      placeholder="Incolla qui i log con:
 Nome Cliente:
 Servizio:
 Importo:
 Targa:
-Firma operatore:"></textarea><br />
+Firma operatore:"
+    ></textarea
+    ><br />
 
-  <button onclick="elabora()">Elabora</button>
-  <button onclick="resetFatture()" style="margin-left: 10px; background: #ff4444">
-    Reset
-  </button>
+    <button onclick="elabora()">Elabora</button>
+    <button
+      onclick="resetFatture()"
+      style="margin-left: 10px; background: #ff4444"
+    >
+      Reset
+    </button>
 
-  <div id="error" class="error"></div>
-  <div id="info" class="info"></div>
+    <div id="error" class="error"></div>
+    <div id="info" class="info"></div>
 
-  <h2>Dettaglio lavori</h2>
-  <input type="text" id="searchInput" placeholder="Cerca..." style="
+    <h2>Dettaglio lavori</h2>
+    <input
+      type="text"
+      id="searchInput"
+      placeholder="Cerca..."
+      style="
         margin-top: 10px;
         padding: 6px;
         width: 250px;
@@ -204,518 +212,557 @@ Firma operatore:"></textarea><br />
         border: 1px solid #444;
         background: #15151c;
         color: #fff;
-      " />
-  <select id="searchField" style="
+      "
+    />
+    <select
+      id="searchField"
+      style="
         margin-left: 10px;
         padding: 6px;
         border-radius: 6px;
         border: 1px solid #444;
         background: #15151c;
         color: #fff;
-      ">
-    <option value="all">Tutto</option>
-    <option value="cliente">Cliente</option>
-    <option value="servizio">Servizio</option>
-    <option value="modello">Modello</option>
-    <option value="operatore">Operatore</option>
-    <option value="targa">Targa</option>
-  </select>
+      "
+    >
+      <option value="all">Tutto</option>
+      <option value="cliente">Cliente</option>
+      <option value="servizio">Servizio</option>
+      <option value="modello">Modello</option>
+      <option value="operatore">Operatore</option>
+      <option value="targa">Targa</option>
+    </select>
 
-  <div id="dettaglioContainer"></div>
+    <div id="dettaglioContainer"></div>
 
-  <div class="totali">
-    <div class="totale-box">
-      <h3>Totale generale</h3>
-      <div id="totaleGenerale">€ 0,00</div>
-      <div id="numeroLavori"></div>
+    <div class="totali">
+      <div class="totale-box">
+        <h3>Totale generale</h3>
+        <div id="totaleGenerale">€ 0,00</div>
+        <div id="numeroLavori"></div>
+      </div>
+      <div class="totale-box">
+        <h3>Fatturato per operatore</h3>
+        <div id="totaliPerOperatore"></div>
+      </div>
     </div>
-    <div class="totale-box">
-      <h3>Fatturato per operatore</h3>
-      <div id="totaliPerOperatore"></div>
-    </div>
-  </div>
 
-  <script>
-    // ARRAY UFFICIALE DIPENDENTI
-    const dipendenti = [
-      "Joe Pistone",
-      "Carlos Santana",
-      "Simone Garozzo",
-      "Arianna Amato",
-      "Antonio Ocristo",
-      "Salvatore Riina",
-      "Genny Esposito",
-      "King Decali",
-    ];
+    <script>
+      // ARRAY UFFICIALE DIPENDENTI
+      const dipendenti = [
+        "Joe Pistone",
+        "Carlos Santana",
+        "Simone Garozzo",
+        "Arianna Amato",
+        "Antonio Ocristo",
+        "Salvatore Riina",
+        "Genny Esposito",
+        "King Decali",
+      ];
 
-    const autoList = [
-      {
-        modello: "ANNIS CALICO GTF",
-        codice: "CalicoGTF",
-        prezzoVendita: 90000,
-        prezzoAcquisto: 72000,
-        profitto: 17460,
-        keys: ["calico"],
-      },
-      {
-        modello: "LA COUREUSE",
-        codice: "LaCourese",
-        prezzoVendita: 65400,
-        prezzoAcquisto: 52320,
-        profitto: 12687.6,
-        keys: ["coureuse"],
-      },
-      {
-        modello: "VAPID DOMINATOR ASP",
-        codice: "DominatorASP",
-        prezzoVendita: 52000,
-        prezzoAcquisto: 41600,
-        profitto: 10088,
-        keys: ["dominator"],
-      },
-      {
-        modello: "ELEGY RH8",
-        codice: "ElegyRH8",
-        prezzoVendita: 71000,
-        prezzoAcquisto: 56800,
-        profitto: 13774,
-        keys: ["elegy", "rh8"],
-      },
-      {
-        modello: "ANNIS EUROS",
-        codice: "Euros",
-        prezzoVendita: 70000,
-        prezzoAcquisto: 56000,
-        profitto: 13580,
-        keys: ["euros"],
-      },
-      {
-        modello: "FELON GT",
-        codice: "FelonGT",
-        prezzoVendita: 64500,
-        prezzoAcquisto: 51600,
-        profitto: 12513,
-        keys: ["felon"],
-      },
-      {
-        modello: "FLASH GT",
-        codice: "FlashGT",
-        prezzoVendita: 87000,
-        prezzoAcquisto: 69600,
-        profitto: 16878,
-        keys: ["flash"],
-      },
-      {
-        modello: "FATGOM FR36",
-        codice: "FatgomFR36",
-        prezzoVendita: 48000,
-        prezzoAcquisto: 36000,
-        profitto: 11640,
-        keys: ["fatgom"],
-      },
-      {
-        modello: "KARIN SKYLINE",
-        codice: "KarinSkyline",
-        prezzoVendita: 110000,
-        prezzoAcquisto: 88000,
-        profitto: 21340,
-        keys: ["skyline"],
-      },
-      {
-        modello: "MITSU EVO",
-        codice: "Evo",
-        prezzoVendita: 140000,
-        prezzoAcquisto: 112000,
-        profitto: 27160,
-        keys: ["evo"],
-      },
-      {
-        modello: "MIT GROWLER",
-        codice: "Growler",
-        prezzoVendita: 130000,
-        prezzoAcquisto: 104000,
-        profitto: 25220,
-        keys: ["growler"],
-      },
-      {
-        modello: "MIT HOTRING",
-        codice: "Hotring",
-        prezzoVendita: 145000,
-        prezzoAcquisto: 116000,
-        profitto: 28130,
-        keys: ["hotring"],
-      },
-      {
-        modello: "ISSI 8",
-        codice: "Issi8",
-        prezzoVendita: 33000,
-        prezzoAcquisto: 26400,
-        profitto: 6402,
-        keys: ["issi"],
-      },
-      {
-        modello: "JESTER RACE",
-        codice: "JesterRace",
-        prezzoVendita: 150000,
-        prezzoAcquisto: 120000,
-        profitto: 29100,
-        keys: ["jester"],
-      },
-      {
-        modello: "DINKA JASTER CLASSIC",
-        codice: "JasterClassic",
-        prezzoVendita: 80000,
-        prezzoAcquisto: 64000,
-        profitto: 15520,
-        keys: ["jaster classic"],
-      },
-      {
-        modello: "DINKA JASTER RR",
-        codice: "JasterRR",
-        prezzoVendita: 80000,
-        prezzoAcquisto: 64000,
-        profitto: 15520,
-        keys: ["jaster rr"],
-      },
-      {
-        modello: "DINKA KANJO SJ",
-        codice: "KanjoSJ",
-        prezzoVendita: 90000,
-        prezzoAcquisto: 72000,
-        profitto: 17460,
-        keys: ["kanjo"],
-      },
-      {
-        modello: "OBEY OMNIS",
-        codice: "Omnis",
-        prezzoVendita: 69000,
-        prezzoAcquisto: 56800,
-        profitto: 11834,
-        keys: ["omnis"],
-      },
-      {
-        modello: "VAN PARADISE",
-        codice: "Paradise",
-        prezzoVendita: 30000,
-        prezzoAcquisto: 24000,
-        profitto: 5820,
-        keys: ["paradise"],
-      },
-      {
-        modello: "PENUMBRA .",
-        codice: "Penumbra.",
-        prezzoVendita: 75000,
-        prezzoAcquisto: 60000,
-        profitto: 14550,
-        keys: ["penumbra"],
-      },
-      {
-        modello: "PENUMBRA FF",
-        codice: "PenumbraFF",
-        prezzoVendita: 60000,
-        prezzoAcquisto: 48000,
-        profitto: 11640,
-        keys: ["penumbra ff", "penumbraff"],
-      },
-      {
-        modello: "KARIN PREVION",
-        codice: "Previon",
-        prezzoVendita: 54000,
-        prezzoAcquisto: 44800,
-        profitto: 8924,
-        keys: ["previon"],
-      },
-      {
-        modello: "ANNIS REMUS",
-        codice: "Remus",
-        prezzoVendita: 60000,
-        prezzoAcquisto: 48000,
-        profitto: 11640,
-        keys: ["remus"],
-      },
-      {
-        modello: "RT 3000",
-        codice: "RRRT3000",
-        prezzoVendita: 49000,
-        prezzoAcquisto: 39200,
-        profitto: 9506,
-        keys: ["rt3000", "rt 3000"],
-      },
-      {
-        modello: "ETR 1",
-        codice: "EETR1",
-        prezzoVendita: 110000,
-        prezzoAcquisto: 88000,
-        profitto: 21340,
-        keys: ["etr", "etr1"],
-      },
-      {
-        modello: "SPECTER",
-        codice: "SPECTER",
-        prezzoVendita: 99000,
-        prezzoAcquisto: 79200,
-        profitto: 19206,
-        keys: ["specter"],
-      },
-      {
-        modello: "DINKA SUGOI",
-        codice: "SUGOI",
-        prezzoVendita: 90000,
-        prezzoAcquisto: 72000,
-        profitto: 17460,
-        keys: ["sugoi"],
-      },
-      {
-        modello: "KARIN SULTAN",
-        codice: "SULTAN",
-        prezzoVendita: 77000,
-        prezzoAcquisto: 70400,
-        profitto: 6402,
-        keys: ["sultan "],
-      },
-      {
-        modello: "SULTAN RS",
-        codice: "SultanRS",
-        prezzoVendita: 100000,
-        prezzoAcquisto: 80000,
-        profitto: 19400,
-        keys: ["sultan rs"],
-      },
-      {
-        modello: "ZION CABRIO",
-        codice: "Cabrio",
-        prezzoVendita: 53000,
-        prezzoAcquisto: 42400,
-        profitto: 10282,
-        keys: ["zion", "cabrio"],
-      },
-      {
-        modello: "ANNIS ZR350",
-        codice: "ZZZR350",
-        prezzoVendita: 60000,
-        prezzoAcquisto: 48000,
-        profitto: 11640,
-        keys: ["zr350", "zr 350", "zr"],
-      },
-      {
-        modello: "SULTAN 3",
-        codice: "Sultan3",
-        prezzoVendita: 65000,
-        prezzoAcquisto: 52000,
-        profitto: 12610,
-        keys: ["sultan 3"],
-      },
-    ];
+      const autoList = [
+        {
+          modello: "ANNIS CALICO GTF",
+          codice: "CalicoGTF",
+          prezzoVendita: 90000,
+          prezzoAcquisto: 72000,
+          profitto: 17460,
+          keys: ["calico"],
+        },
+        {
+          modello: "LA COUREUSE",
+          codice: "LaCourese",
+          prezzoVendita: 65400,
+          prezzoAcquisto: 52320,
+          profitto: 12687.6,
+          keys: ["coureuse"],
+        },
+        {
+          modello: "VAPID DOMINATOR ASP",
+          codice: "DominatorASP",
+          prezzoVendita: 52000,
+          prezzoAcquisto: 41600,
+          profitto: 10088,
+          keys: ["dominator"],
+        },
+        {
+          modello: "ELEGY RH8",
+          codice: "ElegyRH8",
+          prezzoVendita: 71000,
+          prezzoAcquisto: 56800,
+          profitto: 13774,
+          keys: ["elegy", "rh8"],
+        },
+        {
+          modello: "ANNIS EUROS",
+          codice: "Euros",
+          prezzoVendita: 70000,
+          prezzoAcquisto: 56000,
+          profitto: 13580,
+          keys: ["euros"],
+        },
+        {
+          modello: "FELON GT",
+          codice: "FelonGT",
+          prezzoVendita: 64500,
+          prezzoAcquisto: 51600,
+          profitto: 12513,
+          keys: ["felon"],
+        },
+        {
+          modello: "FLASH GT",
+          codice: "FlashGT",
+          prezzoVendita: 87000,
+          prezzoAcquisto: 69600,
+          profitto: 16878,
+          keys: ["flash"],
+        },
+        {
+          modello: "FATGOM FR36",
+          codice: "FatgomFR36",
+          prezzoVendita: 48000,
+          prezzoAcquisto: 36000,
+          profitto: 11640,
+          keys: ["fatgom"],
+        },
+        {
+          modello: "KARIN SKYLINE",
+          codice: "KarinSkyline",
+          prezzoVendita: 110000,
+          prezzoAcquisto: 88000,
+          profitto: 21340,
+          keys: ["skyline"],
+        },
+        {
+          modello: "MITSU EVO",
+          codice: "Evo",
+          prezzoVendita: 140000,
+          prezzoAcquisto: 112000,
+          profitto: 27160,
+          keys: ["evo"],
+        },
+        {
+          modello: "MIT GROWLER",
+          codice: "Growler",
+          prezzoVendita: 130000,
+          prezzoAcquisto: 104000,
+          profitto: 25220,
+          keys: ["growler"],
+        },
+        {
+          modello: "MIT HOTRING",
+          codice: "Hotring",
+          prezzoVendita: 145000,
+          prezzoAcquisto: 116000,
+          profitto: 28130,
+          keys: ["hotring"],
+        },
+        {
+          modello: "ISSI 8",
+          codice: "Issi8",
+          prezzoVendita: 33000,
+          prezzoAcquisto: 26400,
+          profitto: 6402,
+          keys: ["issi"],
+        },
+        {
+          modello: "JESTER RACE",
+          codice: "JesterRace",
+          prezzoVendita: 150000,
+          prezzoAcquisto: 120000,
+          profitto: 29100,
+          keys: ["jester"],
+        },
+        {
+          modello: "DINKA JASTER CLASSIC",
+          codice: "JasterClassic",
+          prezzoVendita: 80000,
+          prezzoAcquisto: 64000,
+          profitto: 15520,
+          keys: ["jaster classic"],
+        },
+        {
+          modello: "DINKA JASTER RR",
+          codice: "JasterRR",
+          prezzoVendita: 80000,
+          prezzoAcquisto: 64000,
+          profitto: 15520,
+          keys: ["jaster rr"],
+        },
+        {
+          modello: "DINKA KANJO SJ",
+          codice: "KanjoSJ",
+          prezzoVendita: 90000,
+          prezzoAcquisto: 72000,
+          profitto: 17460,
+          keys: ["kanjo"],
+        },
+        {
+          modello: "OBEY OMNIS",
+          codice: "Omnis",
+          prezzoVendita: 69000,
+          prezzoAcquisto: 56800,
+          profitto: 11834,
+          keys: ["omnis"],
+        },
+        {
+          modello: "VAN PARADISE",
+          codice: "Paradise",
+          prezzoVendita: 30000,
+          prezzoAcquisto: 24000,
+          profitto: 5820,
+          keys: ["paradise"],
+        },
+        {
+          modello: "PENUMBRA .",
+          codice: "Penumbra.",
+          prezzoVendita: 75000,
+          prezzoAcquisto: 60000,
+          profitto: 14550,
+          keys: ["penumbra"],
+        },
+        {
+          modello: "PENUMBRA FF",
+          codice: "PenumbraFF",
+          prezzoVendita: 60000,
+          prezzoAcquisto: 48000,
+          profitto: 11640,
+          keys: ["penumbra ff", "penumbraff"],
+        },
+        {
+          modello: "KARIN PREVION",
+          codice: "Previon",
+          prezzoVendita: 54000,
+          prezzoAcquisto: 44800,
+          profitto: 8924,
+          keys: ["previon"],
+        },
+        {
+          modello: "ANNIS REMUS",
+          codice: "Remus",
+          prezzoVendita: 60000,
+          prezzoAcquisto: 48000,
+          profitto: 11640,
+          keys: ["remus"],
+        },
+        {
+          modello: "RT 3000",
+          codice: "RRRT3000",
+          prezzoVendita: 49000,
+          prezzoAcquisto: 39200,
+          profitto: 9506,
+          keys: ["rt3000", "rt 3000"],
+        },
+        {
+          modello: "ETR 1",
+          codice: "EETR1",
+          prezzoVendita: 110000,
+          prezzoAcquisto: 88000,
+          profitto: 21340,
+          keys: ["etr", "etr1"],
+        },
+        {
+          modello: "SPECTER",
+          codice: "SPECTER",
+          prezzoVendita: 99000,
+          prezzoAcquisto: 79200,
+          profitto: 19206,
+          keys: ["specter"],
+        },
+        {
+          modello: "DINKA SUGOI",
+          codice: "SUGOI",
+          prezzoVendita: 90000,
+          prezzoAcquisto: 72000,
+          profitto: 17460,
+          keys: ["sugoi"],
+        },
+        {
+          modello: "KARIN SULTAN",
+          codice: "SULTAN",
+          prezzoVendita: 77000,
+          prezzoAcquisto: 70400,
+          profitto: 6402,
+          keys: ["sultan "],
+        },
+        {
+          modello: "SULTAN RS",
+          codice: "SultanRS",
+          prezzoVendita: 100000,
+          prezzoAcquisto: 80000,
+          profitto: 19400,
+          keys: ["sultan rs"],
+        },
+        {
+          modello: "ZION CABRIO",
+          codice: "Cabrio",
+          prezzoVendita: 53000,
+          prezzoAcquisto: 42400,
+          profitto: 10282,
+          keys: ["zion", "cabrio"],
+        },
+        {
+          modello: "ANNIS ZR350",
+          codice: "ZZZR350",
+          prezzoVendita: 60000,
+          prezzoAcquisto: 48000,
+          profitto: 11640,
+          keys: ["zr350", "zr 350", "zr"],
+        },
+        {
+          modello: "SULTAN 3",
+          codice: "Sultan3",
+          prezzoVendita: 65000,
+          prezzoAcquisto: 52000,
+          profitto: 12610,
+          keys: ["sultan 3"],
+        },
+      ];
 
-    function trovaAutoDaServizio(servizio) {
-      if (!servizio) return null;
-      const s = servizio.toLowerCase();
+      // ====== SETTINGS SYNC (dipendenti + macchine da localStorage) ======
+      const LS_DIP = "jdm_dipendenti";
+      const LS_CARS = "jdm_autoList";
 
-      // Considero solo le vendite auto
-      if (!s.includes("vendita")) return null;
-
-      // Caso speciale Penumbra FF
-      if (s.includes("penumbra") && s.includes("ff")) {
-        return autoList.find((a) => a.codice === "PenumbraFF") || null;
+      function loadDipendenti() {
+        try {
+          const v = JSON.parse(localStorage.getItem(LS_DIP));
+          return Array.isArray(v) ? v : null;
+        } catch {
+          return null;
+        }
       }
 
-      // Scansione generica per tutti i modelli
-      for (const auto of autoList) {
-        for (const key of auto.keys) {
-          if (s.includes(key)) {
-            return auto;
+      function loadCars() {
+        try {
+          const v = JSON.parse(localStorage.getItem(LS_CARS));
+          return Array.isArray(v) ? v : null;
+        } catch {
+          return null;
+        }
+      }
+
+      // rimpiazza i default con quelli salvati (se esistono)
+      const savedDip = loadDipendenti();
+      if (savedDip && savedDip.length) {
+        dipendenti.length = 0;
+        savedDip.forEach((d) => dipendenti.push(d));
+      }
+
+      const savedCars = loadCars();
+      if (savedCars && savedCars.length) {
+        autoList.length = 0;
+        savedCars.forEach((a) => autoList.push(a));
+      }
+
+      function trovaAutoDaServizio(servizio) {
+        if (!servizio) return null;
+        const s = servizio.toLowerCase();
+
+        // Considero solo le vendite auto
+        if (!s.includes("vendita")) return null;
+
+        // Caso speciale Penumbra FF
+        if (s.includes("penumbra") && s.includes("ff")) {
+          return autoList.find((a) => a.codice === "PenumbraFF") || null;
+        }
+
+        // Scansione generica per tutti i modelli
+        for (const auto of autoList) {
+          for (const key of auto.keys) {
+            if (s.includes(key)) {
+              return auto;
+            }
           }
         }
+        return null; // non riconosciuta
       }
-      return null; // non riconosciuta
-    }
 
-    // === SALVATAGGIO E CARICAMENTO DATI ===
-    function loadFatture() {
-      try {
-        return JSON.parse(localStorage.getItem("fattureJDM")) || [];
-      } catch {
-        return [];
+      // === SALVATAGGIO E CARICAMENTO DATI ===
+      function loadFatture() {
+        try {
+          return JSON.parse(localStorage.getItem("fattureJDM")) || [];
+        } catch {
+          return [];
+        }
       }
-    }
-    function saveFatture(data) {
-      localStorage.setItem("fattureJDM", JSON.stringify(data));
-    }
-    function resetFatture() {
-      if (
-        !confirm("Sei sicuro? Verranno eliminate TUTTE le fatture salvate.")
-      )
-        return;
-      localStorage.removeItem("fattureJDM");
-      location.reload();
-    }
+      function saveFatture(data) {
+        localStorage.setItem("fattureJDM", JSON.stringify(data));
+      }
+      function resetFatture() {
+        if (
+          !confirm("Sei sicuro? Verranno eliminate TUTTE le fatture salvate.")
+        )
+          return;
+        localStorage.removeItem("fattureJDM");
+        location.reload();
+      }
 
-    function parseImporto(raw) {
-      if (!raw) return 0;
-      let cleaned = raw
-        .replace(/[^\d.,]/g, "")
-        .replace(/\./g, "")
-        .replace(",", ".");
-      return parseFloat(cleaned) || 0;
-    }
-    function cleanString(t) {
-      return t
-        .toLowerCase()
-        .replace(/[^\w\sÀ-ÖØ-öø-ÿ]/g, " ")
-        .replace(/\s+/g, " ")
-        .trim();
-    }
-    function matchDipendente(raw) {
-      const cleaned = cleanString(raw);
-      if (!cleaned) return "Sconosciuto";
-      let best = "Sconosciuto",
-        bestScore = 0;
-      dipendenti.forEach((dip) => {
-        const parts = cleanString(dip).split(" ");
-        let score = 0;
-        parts.forEach((p) => {
-          if (cleaned.includes(p)) score++;
+      function parseImporto(raw) {
+        if (!raw) return 0;
+        let cleaned = raw
+          .replace(/[^\d.,]/g, "")
+          .replace(/\./g, "")
+          .replace(",", ".");
+        return parseFloat(cleaned) || 0;
+      }
+      function cleanString(t) {
+        return t
+          .toLowerCase()
+          .replace(/[^\w\sÀ-ÖØ-öø-ÿ]/g, " ")
+          .replace(/\s+/g, " ")
+          .trim();
+      }
+      function matchDipendente(raw) {
+        const cleaned = cleanString(raw);
+        if (!cleaned) return "Sconosciuto";
+        let best = "Sconosciuto",
+          bestScore = 0;
+        dipendenti.forEach((dip) => {
+          const parts = cleanString(dip).split(" ");
+          let score = 0;
+          parts.forEach((p) => {
+            if (cleaned.includes(p)) score++;
+          });
+          if (score > bestScore) {
+            bestScore = score;
+            best = dip;
+          }
         });
-        if (score > bestScore) {
-          bestScore = score;
-          best = dip;
+        return best;
+      }
+      function estraiModelloDaServizio(servizio) {
+        if (!servizio) return "";
+        const m = servizio.match(/vendita\s+(.+)/i);
+        return m ? m[1].trim() : "";
+      }
+
+      function isDuplicateRecord(records, nuovo) {
+        const serv = nuovo.servizio.toLowerCase();
+        const isVendita =
+          serv.includes("vendita") &&
+          !serv.includes("kit") &&
+          !serv.includes("ripar");
+        const isKit = serv.includes("kit");
+        const isCibo = serv.includes("locale cibo");
+
+        // 1) KIT: sempre consentiti
+        if (isKit) return false;
+
+        // 2) CIBO: sempre consentito
+        if (isCibo) return false;
+
+        // 3) Vendita Auto: targa valida = 8 caratteri
+        if (isVendita && nuovo.targa && nuovo.targa.length === 8) {
+          return records.some(
+            (r) =>
+              r.targa === nuovo.targa &&
+              r.servizio.toLowerCase().includes("vendita")
+          );
         }
-      });
-      return best;
-    }
-    function estraiModelloDaServizio(servizio) {
-      if (!servizio) return "";
-      const m = servizio.match(/vendita\s+(.+)/i);
-      return m ? m[1].trim() : "";
-    }
 
-    function isDuplicateRecord(records, nuovo) {
-      const serv = nuovo.servizio.toLowerCase();
-      const isVendita =
-        serv.includes("vendita") &&
-        !serv.includes("kit") &&
-        !serv.includes("ripar");
-      const isKit = serv.includes("kit");
-      const isCibo = serv.includes("locale cibo");
-
-      // 1) KIT: sempre consentiti
-      if (isKit) return false;
-
-      // 2) CIBO: sempre consentito
-      if (isCibo) return false;
-
-      // 3) Vendita Auto: targa valida = 8 caratteri
-      if (isVendita && nuovo.targa && nuovo.targa.length === 8) {
-        return records.some(
-          (r) =>
-            r.targa === nuovo.targa &&
-            r.servizio.toLowerCase().includes("vendita")
-        );
-      }
-
-      // 4) Modifiche / Upgrade / Manodopera: confrontiamo tutto
-      if (!isVendita) {
-        return records.some(
-          (r) =>
-            r.cliente === nuovo.cliente &&
-            r.targa === nuovo.targa &&
-            r.importo === nuovo.importo &&
-            r.operatore === nuovo.operatore
-        );
-      }
-
-      // 5) Senza targa o // → lasciamo passare
-      return false;
-    }
-
-    function elabora() {
-      const text = document.getElementById("inputText").value;
-      const errorDiv = document.getElementById("error");
-      const infoDiv = document.getElementById("info");
-      const dettaglioContainer =
-        document.getElementById("dettaglioContainer");
-      const totaleGeneraleDiv = document.getElementById("totaleGenerale");
-      const numeroLavoriDiv = document.getElementById("numeroLavori");
-      const totaliPerOperatoreDiv =
-        document.getElementById("totaliPerOperatore");
-
-      errorDiv.textContent = "";
-      dettaglioContainer.innerHTML = "";
-      totaliPerOperatoreDiv.innerHTML = "";
-      totaleGeneraleDiv.textContent = "€ 0,00";
-      numeroLavoriDiv.textContent = "";
-
-      const regex =
-        /Nome Cliente:\s*([^\n\r]+)[\s\S]*?Servizio:\s*([^\n\r]+)[\s\S]*?Importo:\s*([^\n\r]+)[\s\S]*?Targa:\s*([^\n\r]*)[\s\S]*?Firma operatore:\s*([^\n\r]+)/gi;
-
-      const regexCibo =
-        /Mittente\s*([^\n\r]+)[\s\S]*?Destinatario\s*([^\n\r]+)[\s\S]*?Importo\s*([^\n\r]+)/gi;
-
-      let records = loadFatture();
-      let match;
-
-      // 🔍 ESTRAZIONE FATTURE AUTO/MODIFICHE
-      while ((match = regex.exec(text)) !== null) {
-        const nome = match[1].trim();
-        const servizio = match[2].trim();
-        const importo = parseImporto(match[3].trim());
-
-        // targa
-        const rawTarga = match[4].trim();
-        const targa = rawTarga.length === 8 ? rawTarga : "//";
-
-        // operatore
-        const operatoreRaw = match[5].trim();
-        const operatoreClean = operatoreRaw.split("(")[0].trim();
-        const operatore = matchDipendente(operatoreClean);
-
-        const auto = trovaAutoDaServizio(servizio);
-        const modello = auto ? auto.codice : "";
-
-        const nuovo = {
-          cliente: nome,
-          servizio,
-          modello,
-          importo,
-          targa,
-          operatoreRaw,
-          operatore,
-        };
-
-        if (!isDuplicateRecord(records, nuovo)) {
-          records.push(nuovo);
+        // 4) Modifiche / Upgrade / Manodopera: confrontiamo tutto
+        if (!isVendita) {
+          return records.some(
+            (r) =>
+              r.cliente === nuovo.cliente &&
+              r.targa === nuovo.targa &&
+              r.importo === nuovo.importo &&
+              r.operatore === nuovo.operatore
+          );
         }
+
+        // 5) Senza targa o // → lasciamo passare
+        return false;
       }
 
-      // 🍔 FATTURE CIBO
-      while ((match = regexCibo.exec(text)) !== null) {
-        const operatoreRaw = match[1].trim();
-        const cliente = match[2].trim();
-        const importo = parseImporto(match[3].trim());
-        const operatore = matchDipendente(operatoreRaw);
+      function elabora() {
+        const text = document.getElementById("inputText").value;
+        const errorDiv = document.getElementById("error");
+        const infoDiv = document.getElementById("info");
+        const dettaglioContainer =
+          document.getElementById("dettaglioContainer");
+        const totaleGeneraleDiv = document.getElementById("totaleGenerale");
+        const numeroLavoriDiv = document.getElementById("numeroLavori");
+        const totaliPerOperatoreDiv =
+          document.getElementById("totaliPerOperatore");
 
-        const nuovo = {
-          cliente,
-          servizio: "Locale Cibo",
-          modello: "",
-          importo,
-          targa: "//",
-          operatoreRaw,
-          operatore,
-        };
+        errorDiv.textContent = "";
+        dettaglioContainer.innerHTML = "";
+        totaliPerOperatoreDiv.innerHTML = "";
+        totaleGeneraleDiv.textContent = "€ 0,00";
+        numeroLavoriDiv.textContent = "";
 
-        if (!isDuplicateRecord(records, nuovo)) {
-          records.push(nuovo);
+        const regex =
+          /Nome Cliente:\s*([^\n\r]+)[\s\S]*?Servizio:\s*([^\n\r]+)[\s\S]*?Importo:\s*([^\n\r]+)[\s\S]*?Targa:\s*([^\n\r]*)[\s\S]*?Firma operatore:\s*([^\n\r]+)/gi;
+
+        const regexCibo =
+          /Mittente\s*([^\n\r]+)[\s\S]*?Destinatario\s*([^\n\r]+)[\s\S]*?Importo\s*([^\n\r]+)/gi;
+
+        let records = loadFatture();
+        let match;
+
+        // 🔍 ESTRAZIONE FATTURE AUTO/MODIFICHE
+        while ((match = regex.exec(text)) !== null) {
+          const nome = match[1].trim();
+          const servizio = match[2].trim();
+          const importo = parseImporto(match[3].trim());
+
+          // targa
+          const rawTarga = match[4].trim();
+          const targa = rawTarga.length === 8 ? rawTarga : "//";
+
+          // operatore
+          const operatoreRaw = match[5].trim();
+          const operatoreClean = operatoreRaw.split("(")[0].trim();
+          const operatore = matchDipendente(operatoreClean);
+
+          const auto = trovaAutoDaServizio(servizio);
+          const modello = auto ? auto.codice : "";
+
+          const nuovo = {
+            cliente: nome,
+            servizio,
+            modello,
+            importo,
+            targa,
+            operatoreRaw,
+            operatore,
+          };
+
+          if (!isDuplicateRecord(records, nuovo)) {
+            records.push(nuovo);
+          }
         }
-      }
 
-      if (records.length === 0)
-        return (errorDiv.textContent = "Zero record letti.");
-      saveFatture(records);
-      infoDiv.textContent = "Record salvati: " + records.length;
+        // 🍔 FATTURE CIBO
+        while ((match = regexCibo.exec(text)) !== null) {
+          const operatoreRaw = match[1].trim();
+          const cliente = match[2].trim();
+          const importo = parseImporto(match[3].trim());
+          const operatore = matchDipendente(operatoreRaw);
 
-      // TAB DETTAGLI
-      let html = `<table><thead><tr>
+          const nuovo = {
+            cliente,
+            servizio: "Locale Cibo",
+            modello: "",
+            importo,
+            targa: "//",
+            operatoreRaw,
+            operatore,
+          };
+
+          if (!isDuplicateRecord(records, nuovo)) {
+            records.push(nuovo);
+          }
+        }
+
+        if (records.length === 0)
+          return (errorDiv.textContent = "Zero record letti.");
+        saveFatture(records);
+        infoDiv.textContent = "Record salvati: " + records.length;
+
+        // TAB DETTAGLI
+        let html = `<table><thead><tr>
     <th class="sortable" onclick="sortTable('#dettaglioContainer table',0,false)">#</th>
     <th class="sortable" onclick="sortTable('#dettaglioContainer table',1,false)">Cliente</th>
     <th class="sortable" onclick="sortTable('#dettaglioContainer table',2,false)">Servizio</th>
@@ -726,68 +773,69 @@ Firma operatore:"></textarea><br />
     <th class="sortable" onclick="sortTable('#dettaglioContainer table',7,false)">Assegnato</th>
   </tr></thead><tbody>`;
 
-      let totale = 0;
-      const perOperatore = {};
+        let totale = 0;
+        const perOperatore = {};
 
-      records.forEach((r, idx) => {
-        const serv = r.servizio.toLowerCase();
-        const isAuto =
-          serv.includes("vendita") &&
-          !serv.includes("kit") &&
-          !serv.includes("ripar");
+        records.forEach((r, idx) => {
+          const serv = r.servizio.toLowerCase();
+          const isAuto =
+            serv.includes("vendita") &&
+            !serv.includes("kit") &&
+            !serv.includes("ripar");
 
-        if (!perOperatore[r.operatore]) {
-          perOperatore[r.operatore] = {
-            vendite: { tot: 0, modelli: {} },
-            modifiche: { tot: 0, count: 0 },
-            cibo: 0
-          };
-        }
-
-        if (isAuto) {
-          const auto = trovaAutoDaServizio(r.servizio);
-          const valoreVendita = auto ? auto.profitto : r.importo;
-
-          // sommo il prezzo di vendita pieno
-          perOperatore[r.operatore].vendite.tot += valoreVendita;
-
-          if (!perOperatore[r.operatore].vendite.modelli[r.modello]) {
-            perOperatore[r.operatore].vendite.modelli[r.modello] = 0;
+          if (!perOperatore[r.operatore]) {
+            perOperatore[r.operatore] = {
+              vendite: { tot: 0, modelli: {} },
+              modifiche: { tot: 0, count: 0 },
+              cibo: 0,
+            };
           }
-          perOperatore[r.operatore].vendite.modelli[r.modello]++;
 
-          // lo aggiungo anche al totale generale
-          totale += valoreVendita;
-        } else {
-          if (serv.includes("locale cibo")) {
-            perOperatore[r.operatore].cibo += r.importo;
-            totale += r.importo;
+          if (isAuto) {
+            const auto = trovaAutoDaServizio(r.servizio);
+            const valoreVendita = auto ? auto.profitto : r.importo;
+
+            // sommo il prezzo di vendita pieno
+            perOperatore[r.operatore].vendite.tot += valoreVendita;
+
+            if (!perOperatore[r.operatore].vendite.modelli[r.modello]) {
+              perOperatore[r.operatore].vendite.modelli[r.modello] = 0;
+            }
+            perOperatore[r.operatore].vendite.modelli[r.modello]++;
+
+            // lo aggiungo anche al totale generale
+            totale += valoreVendita;
           } else {
-            perOperatore[r.operatore].modifiche.tot += r.importo;
-            perOperatore[r.operatore].modifiche.count++;
-            totale += r.importo;
+            if (serv.includes("locale cibo")) {
+              perOperatore[r.operatore].cibo += r.importo;
+              totale += r.importo;
+            } else {
+              perOperatore[r.operatore].modifiche.tot += r.importo;
+              perOperatore[r.operatore].modifiche.count++;
+              totale += r.importo;
+            }
           }
-        }
 
-
-        html += `<tr><td>${idx + 1}</td><td>${r.cliente}</td><td>${r.servizio
+          html += `<tr><td>${idx + 1}</td><td>${r.cliente}</td><td>${
+            r.servizio
           }</td><td>${r.modello || "-"}</td>
             <td>€ ${r.importo.toLocaleString("it-IT", {
-            minimumFractionDigits: 2,
-          })}</td>
-            <td>${r.targa}</td><td>${r.operatoreRaw}</td><td>${r.operatore
+              minimumFractionDigits: 2,
+            })}</td>
+            <td>${r.targa}</td><td>${r.operatoreRaw}</td><td>${
+            r.operatore
           }</td></tr>`;
-      });
+        });
 
-      html += "</tbody></table>";
-      dettaglioContainer.innerHTML = html;
+        html += "</tbody></table>";
+        dettaglioContainer.innerHTML = html;
 
-      totaleGeneraleDiv.textContent =
-        "€ " + totale.toLocaleString("it-IT", { minimumFractionDigits: 2 });
-      numeroLavoriDiv.textContent = "Numero lavori: " + records.length;
+        totaleGeneraleDiv.textContent =
+          "€ " + totale.toLocaleString("it-IT", { minimumFractionDigits: 2 });
+        numeroLavoriDiv.textContent = "Numero lavori: " + records.length;
 
-      // TABELLA PER OPERATORE
-      let opHtml = `<table><thead><tr>
+        // TABELLA PER OPERATORE
+        let opHtml = `<table><thead><tr>
     <th class="sortable" onclick="sortTable('#totaliPerOperatore table',0,false)">Operatore</th>
     <th  class="sortable" onclick="sortTable('#totaliPerOperatore table',1,true)">Totale Modifiche</th>
     <th class="sortable" onclick="sortTable('#totaliPerOperatore table',2,true)">Solo Cibo</th>
@@ -795,211 +843,206 @@ Firma operatore:"></textarea><br />
     <th class="sortable" onclick="sortTable('#totaliPerOperatore table',3,false)">Modelli venduti</th>
   </tr></thead><tbody>`;
 
-      Object.keys(perOperatore).forEach((op) => {
-        const d = perOperatore[op];
-        const vendite = d.vendite.tot;
-        const modifiche = d.modifiche.tot;
+        Object.keys(perOperatore).forEach((op) => {
+          const d = perOperatore[op];
+          const vendite = d.vendite.tot;
+          const modifiche = d.modifiche.tot;
 
-        let modelli = "-";
-        if (Object.keys(d.vendite.modelli).length > 0) {
-          modelli = Object.keys(d.vendite.modelli)
-            .map((m) => `${m} x${d.vendite.modelli[m]}`)
-            .join(", ");
-        }
+          let modelli = "-";
+          if (Object.keys(d.vendite.modelli).length > 0) {
+            modelli = Object.keys(d.vendite.modelli)
+              .map((m) => `${m} x${d.vendite.modelli[m]}`)
+              .join(", ");
+          }
 
-        opHtml += `<tr><td>${op}</td>
+          opHtml += `<tr><td>${op}</td>
   <td>€ ${modifiche.toLocaleString("it-IT", {
-          minimumFractionDigits: 2,
-        })}</td>
+    minimumFractionDigits: 2,
+  })}</td>
 
   <td>€ ${d.cibo.toLocaleString("it-IT", {
-          minimumFractionDigits: 2,
-        })}</td>
+    minimumFractionDigits: 2,
+  })}</td>
 
   <td>€ ${vendite.toLocaleString("it-IT", {
-          minimumFractionDigits: 2,
-        })}</td>
+    minimumFractionDigits: 2,
+  })}</td>
 
   <td class="copy-modelli" onclick="copiaModelli(this)" title="Copia formule modelli">
   ${modelli}
 </td>
 </tr>`;
-      });
-
-
-      opHtml += "</tbody></table>";
-      totaliPerOperatoreDiv.innerHTML = opHtml;
-      document.getElementById("searchInput").oninput = applyFilter;
-      document.getElementById("searchField").onchange = applyFilter;
-    }
-
-    function applyFilter() {
-      const input = document
-        .getElementById("searchInput")
-        .value.toLowerCase();
-      const field = document.getElementById("searchField").value;
-      const rows = document.querySelectorAll(
-        "#dettaglioContainer table tbody tr"
-      );
-
-      rows.forEach((row) => {
-        const cells = row.querySelectorAll("td");
-        let text = "";
-
-        switch (field) {
-          case "cliente":
-            text = cells[1].textContent.toLowerCase();
-            break;
-          case "servizio":
-            text = cells[2].textContent.toLowerCase();
-            break;
-          case "modello":
-            text = cells[3].textContent.toLowerCase();
-            break;
-          case "targa":
-            text = cells[5].textContent.toLowerCase();
-            break;
-          case "operatore":
-            text = cells[7].textContent.toLowerCase();
-            break;
-          default:
-            text = row.textContent.toLowerCase();
-        }
-        row.style.display = text.includes(input) ? "" : "none";
-      });
-    }
-    // === ORDINAMENTO TABELLE ===
-
-    // 🔁 ORDINAMENTO A 3 STATI (ASC → DESC → ORIGINALE)
-    let sortState = {};
-    let originalOrder = {};
-
-    function sortTable(selector, colIndex, numeric) {
-      const table = document.querySelector(selector);
-      if (!table) return;
-
-      const tbody = table.querySelector("tbody");
-      const rows = Array.from(tbody.querySelectorAll("tr"));
-
-      // salva la disposizione originale solo la prima volta
-      if (!originalOrder[selector]) {
-        originalOrder[selector] = rows.map((r) => r.cloneNode(true));
-      }
-
-      // ciclo stati: ASC → DESC → ORIGINAL
-      if (!sortState[selector]) sortState[selector] = {};
-      const current = sortState[selector][colIndex] || "none";
-      let next;
-
-      if (current === "none") next = "asc";
-      else if (current === "asc") next = "desc";
-      else next = "none";
-
-      sortState[selector][colIndex] = next;
-
-      // eseguo ordinamento
-      if (next === "none") {
-        // ripristino originale
-        tbody.innerHTML = "";
-        originalOrder[selector].forEach((r) =>
-          tbody.appendChild(r.cloneNode(true))
-        );
-      } else {
-        // ordino
-        rows.sort((a, b) => {
-          let A = a.children[colIndex].innerText.trim();
-          let B = b.children[colIndex].innerText.trim();
-
-          if (numeric) {
-            A = parseFloat(A.replace(/[^\d,.-]/g, "").replace(",", "."));
-            B = parseFloat(B.replace(/[^\d,.-]/g, "").replace(",", "."));
-          } else {
-            A = A.toLowerCase();
-            B = B.toLowerCase();
-          }
-
-          if (A < B) return next === "asc" ? -1 : 1;
-          if (A > B) return next === "asc" ? 1 : -1;
-          return 0;
         });
 
-        tbody.innerHTML = "";
-        rows.forEach((r) => tbody.appendChild(r));
+        opHtml += "</tbody></table>";
+        totaliPerOperatoreDiv.innerHTML = opHtml;
+        document.getElementById("searchInput").oninput = applyFilter;
+        document.getElementById("searchField").onchange = applyFilter;
       }
 
-      // aggiorno freccia
-      updateSortArrows(table, colIndex, next);
-    }
+      function applyFilter() {
+        const input = document
+          .getElementById("searchInput")
+          .value.toLowerCase();
+        const field = document.getElementById("searchField").value;
+        const rows = document.querySelectorAll(
+          "#dettaglioContainer table tbody tr"
+        );
 
-    function updateSortArrows(table, colIndex, direction) {
-      const ths = table.querySelectorAll("th");
+        rows.forEach((row) => {
+          const cells = row.querySelectorAll("td");
+          let text = "";
 
-      ths.forEach((th, i) => {
-        // tolgo frecce da tutti
-        th.classList.remove("asc", "desc");
+          switch (field) {
+            case "cliente":
+              text = cells[1].textContent.toLowerCase();
+              break;
+            case "servizio":
+              text = cells[2].textContent.toLowerCase();
+              break;
+            case "modello":
+              text = cells[3].textContent.toLowerCase();
+              break;
+            case "targa":
+              text = cells[5].textContent.toLowerCase();
+              break;
+            case "operatore":
+              text = cells[7].textContent.toLowerCase();
+              break;
+            default:
+              text = row.textContent.toLowerCase();
+          }
+          row.style.display = text.includes(input) ? "" : "none";
+        });
+      }
+      // === ORDINAMENTO TABELLE ===
 
-        // applico solo a quello cliccato
-        if (i === colIndex) {
-          if (direction === "asc") th.classList.add("asc");
-          else if (direction === "desc") th.classList.add("desc");
+      // 🔁 ORDINAMENTO A 3 STATI (ASC → DESC → ORIGINALE)
+      let sortState = {};
+      let originalOrder = {};
+
+      function sortTable(selector, colIndex, numeric) {
+        const table = document.querySelector(selector);
+        if (!table) return;
+
+        const tbody = table.querySelector("tbody");
+        const rows = Array.from(tbody.querySelectorAll("tr"));
+
+        // salva la disposizione originale solo la prima volta
+        if (!originalOrder[selector]) {
+          originalOrder[selector] = rows.map((r) => r.cloneNode(true));
         }
-      });
-    }
 
-    function copiaModelli(td) {
-      const text = td.innerText;
-      if (!text || text === "-") return;
+        // ciclo stati: ASC → DESC → ORIGINAL
+        if (!sortState[selector]) sortState[selector] = {};
+        const current = sortState[selector][colIndex] || "none";
+        let next;
 
-      // Esempio input: "KarinSkyline x1, JasterRR x2"
-      const parts = text.split(",").map(s => s.trim());
+        if (current === "none") next = "asc";
+        else if (current === "asc") next = "desc";
+        else next = "none";
 
-      let lista = [];
+        sortState[selector][colIndex] = next;
 
-      parts.forEach(item => {
-        const [nome, countRaw] = item.split(" x");
-        const count = parseInt(countRaw, 10) || 1;
+        // eseguo ordinamento
+        if (next === "none") {
+          // ripristino originale
+          tbody.innerHTML = "";
+          originalOrder[selector].forEach((r) =>
+            tbody.appendChild(r.cloneNode(true))
+          );
+        } else {
+          // ordino
+          rows.sort((a, b) => {
+            let A = a.children[colIndex].innerText.trim();
+            let B = b.children[colIndex].innerText.trim();
 
-        for (let i = 0; i < count; i++) {
-          lista.push(nome.trim());
+            if (numeric) {
+              A = parseFloat(A.replace(/[^\d,.-]/g, "").replace(",", "."));
+              B = parseFloat(B.replace(/[^\d,.-]/g, "").replace(",", "."));
+            } else {
+              A = A.toLowerCase();
+              B = B.toLowerCase();
+            }
+
+            if (A < B) return next === "asc" ? -1 : 1;
+            if (A > B) return next === "asc" ? 1 : -1;
+            return 0;
+          });
+
+          tbody.innerHTML = "";
+          rows.forEach((r) => tbody.appendChild(r));
         }
-      });
 
-      const formula = "= " + lista.join(" + ");
+        // aggiorno freccia
+        updateSortArrows(table, colIndex, next);
+      }
 
-      navigator.clipboard.writeText(formula);
+      function updateSortArrows(table, colIndex, direction) {
+        const ths = table.querySelectorAll("th");
 
-      td.style.opacity = "0.5";
-      mostraTooltip(td, "Copiato!");
-    }
+        ths.forEach((th, i) => {
+          // tolgo frecce da tutti
+          th.classList.remove("asc", "desc");
 
-    function mostraTooltip(td, text) {
-      let tooltip = document.createElement("div");
-      tooltip.className = "copiato-tooltip";
-      tooltip.textContent = text;
-      document.body.appendChild(tooltip);
+          // applico solo a quello cliccato
+          if (i === colIndex) {
+            if (direction === "asc") th.classList.add("asc");
+            else if (direction === "desc") th.classList.add("desc");
+          }
+        });
+      }
 
-      const rect = td.getBoundingClientRect();
-      tooltip.style.left = rect.left + rect.width / 2 + "px";
-      tooltip.style.top = rect.top - 5 + window.scrollY + "px";
+      function copiaModelli(td) {
+        const text = td.innerText;
+        if (!text || text === "-") return;
 
-      requestAnimationFrame(() => (tooltip.style.opacity = 1));
+        // Esempio input: "KarinSkyline x1, JasterRR x2"
+        const parts = text.split(",").map((s) => s.trim());
 
-      setTimeout(() => {
-        tooltip.style.opacity = 0;
-        setTimeout(() => tooltip.remove(), 150);
-      }, 600);
-      setTimeout(() => {
-        td.style.opacity = "1";
-      }, 600);
-    }
+        let lista = [];
 
+        parts.forEach((item) => {
+          const [nome, countRaw] = item.split(" x");
+          const count = parseInt(countRaw, 10) || 1;
 
+          for (let i = 0; i < count; i++) {
+            lista.push(nome.trim());
+          }
+        });
 
-    window.onload = () => {
-      if (loadFatture().length > 0) elabora();
-    };
+        const formula = "= " + lista.join(" + ");
 
-  </script>
-</body>
+        navigator.clipboard.writeText(formula);
 
+        td.style.opacity = "0.5";
+        mostraTooltip(td, "Copiato!");
+      }
+
+      function mostraTooltip(td, text) {
+        let tooltip = document.createElement("div");
+        tooltip.className = "copiato-tooltip";
+        tooltip.textContent = text;
+        document.body.appendChild(tooltip);
+
+        const rect = td.getBoundingClientRect();
+        tooltip.style.left = rect.left + rect.width / 2 + "px";
+        tooltip.style.top = rect.top - 5 + window.scrollY + "px";
+
+        requestAnimationFrame(() => (tooltip.style.opacity = 1));
+
+        setTimeout(() => {
+          tooltip.style.opacity = 0;
+          setTimeout(() => tooltip.remove(), 150);
+        }, 600);
+        setTimeout(() => {
+          td.style.opacity = "1";
+        }, 600);
+      }
+
+      window.onload = () => {
+        if (loadFatture().length > 0) elabora();
+      };
+    </script>
+  </body>
 </html>
